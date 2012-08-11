@@ -1,9 +1,7 @@
 package eu.hurion.vaadin.heroku;
 
 /**
- * Builder to define configuration to access to memcached.
- *
- * @author Nicolas Hurion
+ * Builder to define configuration to access memcached.
  */
 public class MemcachedConfigurator {
     public static final int DEFAULT_MEMCACHEPORT = 11211;
@@ -60,8 +58,6 @@ public class MemcachedConfigurator {
     /**
      * Regroup configuration information to connect to memcached.
      * Immutable. Use {@link MemcachedConfigurator} to create an instance.
-     *
-     * @author Nicolas Hurion
      */
     final class MemcachedConfiguration {
         private final String username;
@@ -96,6 +92,16 @@ public class MemcachedConfigurator {
 
         public int getPort() {
             return port;
+        }
+
+        @Override
+        public String toString() {
+            return "MemcachedConfiguration{" +
+                    "username='" + username + '\'' +
+                    ", password= Not displayed" +
+                    ", url='" + url + '\'' +
+                    ", port=" + port +
+                    '}';
         }
     }
 

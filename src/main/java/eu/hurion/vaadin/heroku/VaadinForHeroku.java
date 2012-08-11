@@ -7,15 +7,18 @@ import com.bsb.common.vaadin.embed.application.ApplicationBasedEmbedVaadinTomcat
 import com.vaadin.Application;
 import de.javakaffee.web.msm.MemcachedBackupSessionManager;
 import eu.hurion.vaadin.heroku.MemcachedConfigurator.MemcachedConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Properties;
 
 /**
- * Customized {@code EmbedVaadinApplication} to accommodate specialities of Heroku.
+ * Customized {@code EmbedVaadinApplication} to accommodate specificity of Heroku.
  *
- * @author Nicolas Hurion
  */
 public class VaadinForHeroku extends EmbedVaadinServerBuilder<VaadinForHeroku, EmbedVaadinServer> {
+
+    private static final Logger LOG = LoggerFactory.getLogger(VaadinForHeroku.class);
 
     public static final int DEFAULT_PORT = 8080;
     public static final String PORT = "PORT";
@@ -53,12 +56,13 @@ public class VaadinForHeroku extends EmbedVaadinServerBuilder<VaadinForHeroku, E
 
     @Override
     public EmbedVaadinServer build() {
-        MemcachedConfiguration memcahcedConfig = null;
+        MemcachedConfiguration memcachedConfig = null;
         if (this.memcachedConfigurator != null) {
-            memcahcedConfig = memcachedConfigurator.build();
+            memcachedConfig = memcachedConfigurator.build();
         }
+        LOG.debug("Memcached configuration: " + memcachedConfig);
         return new EmbedVaadinWithSessionManagement(getConfig(), getApplicationClass(),
-                memcahcedConfig);
+                memcachedConfig);
     }
 
     @Override
@@ -90,8 +94,6 @@ public class VaadinForHeroku extends EmbedVaadinServerBuilder<VaadinForHeroku, E
         private final MemcachedConfiguration memcachedConfiguration;
 
         /**
-         * Creates a new instance.
-         *
          * @param memcachedConfiguration the ocnfiguration to access memcached.
          *                               If null, memcached-session-manager is not used at all and session are only stored in memory.
          * @param config                 the config to use
