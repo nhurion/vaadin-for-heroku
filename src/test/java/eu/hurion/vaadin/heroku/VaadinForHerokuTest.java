@@ -26,9 +26,10 @@ public class VaadinForHerokuTest {
         driver.close();
     }
 
-    @Test
+    @Test(invocationCount = 5)
     public void checkLocalDriver(){
         driver.get("http://localhost:8080/?restartApplication");
         Assert.assertFalse(driver.findElements(By.id(TestApplication.TEST_LABEL_ID)).isEmpty());
     }
+
 }
