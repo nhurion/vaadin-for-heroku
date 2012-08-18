@@ -109,20 +109,22 @@ public class MemcachedConfigurator {
      * Configuration based on system properties set by the memcacheAddOn
      */
     public static MemcachedConfigurator memcacheAddOn() {
+        final String memcacheServers = System.getenv("MEMCACHE_SERVERS");
         return memcachedConfig()
                 .username(System.getenv("MEMCACHE_USERNAME"))
                 .password(System.getenv("MEMCACHE_PASSWORD"))
-                .url(System.getenv("MEMCACHE_SERVERS"));
+                .url(memcacheServers == null ? DEFAULT_URL : memcacheServers);
     }
 
     /**
      * Configuration based on system properties set by the memcachierAddOn
      */
     public static MemcachedConfigurator memcachierAddOn() {
+        final String memcachierServers = System.getenv("MEMCACHIER_SERVERS");
         return memcachedConfig()
                 .username(System.getenv("MEMCACHIER_USERNAME"))
                 .password(System.getenv("MEMCACHIER_PASSWORD"))
-                .url(System.getenv("MEMCACHIER_SERVERS"));
+                .url(memcachierServers == null ? DEFAULT_URL : memcachierServers);
     }
 
 
