@@ -1,5 +1,5 @@
-Vaadin for Heroku
-================
+Vaadin for Heroku  [![Build Status](https://secure.travis-ci.org/nhurion/vaadin-for-heroku.png?branch=master)](http://travis-ci.org/nhurion/vaadin-for-heroku)
+=================
 
 Easily build a [Vaadin](https://vaadin.com/home) application and deploy it on [Heroku](http://www.heroku.com).
 
@@ -14,7 +14,7 @@ Add the dependency to maven:
     <dependency>
       <groupId>eu.hurion.vaadin.heroku</groupId>
       <artifactId>vaadin-for-heroku</artifactId>
-      <version>0.1.0</version>
+      <version>0.2</version>
     </dependency>
 
 Then make a class with a main method to launch the server;
