@@ -3,7 +3,7 @@ package eu.hurion.vaadin.heroku;
 /**
  * Builder to define configuration to access memcached.
  */
-public class MemcachedConfigurator {
+public class MemcachedConfigBuilder {
     public static final int DEFAULT_MEMCACHEPORT = 11211;
     public static final String DEFAULT_URL = "127.0.0.1";
 
@@ -12,17 +12,17 @@ public class MemcachedConfigurator {
     private String url = DEFAULT_URL;
     private int port = DEFAULT_MEMCACHEPORT;
 
-    private MemcachedConfigurator() {
+    private MemcachedConfigBuilder() {
     }
 
-    public static MemcachedConfigurator memcachedConfig() {
-        return new MemcachedConfigurator();
+    public static MemcachedConfigBuilder memcachedConfig() {
+        return new MemcachedConfigBuilder();
     }
 
     /**
      * Optional. Set the username to use to connect to memcached.
      */
-    public MemcachedConfigurator username(final String username) {
+    public MemcachedConfigBuilder username(final String username) {
         this.username = username;
         return this;
     }
@@ -30,7 +30,7 @@ public class MemcachedConfigurator {
     /**
      * Optional. Set the password to use to connect to memcached.
      */
-    public MemcachedConfigurator password(final String password) {
+    public MemcachedConfigBuilder password(final String password) {
         this.password = password;
         return this;
     }
@@ -38,7 +38,7 @@ public class MemcachedConfigurator {
     /**
      * Url to access memcached. Default to {@value #DEFAULT_URL} if not specified.
      */
-    public MemcachedConfigurator url(final String memcachedUrl) {
+    public MemcachedConfigBuilder url(final String memcachedUrl) {
         this.url = memcachedUrl;
         return this;
     }
@@ -46,7 +46,7 @@ public class MemcachedConfigurator {
     /**
      * Port to use to access memcahce. Default to {@value #DEFAULT_MEMCACHEPORT} if not specified
      */
-    public MemcachedConfigurator port(final int port) {
+    public MemcachedConfigBuilder port(final int port) {
         this.port = port;
         return this;
     }
@@ -57,7 +57,7 @@ public class MemcachedConfigurator {
 
     /**
      * Regroup configuration information to connect to memcached.
-     * Immutable. Use {@link MemcachedConfigurator} to create an instance.
+     * Immutable. Use {@link MemcachedConfigBuilder} to create an instance.
      */
     final class MemcachedConfiguration {
         private final String username;
@@ -108,7 +108,7 @@ public class MemcachedConfigurator {
     /**
      * Configuration based on system properties set by the memcacheAddOn
      */
-    public static MemcachedConfigurator memcacheAddOn() {
+    public static MemcachedConfigBuilder memcacheAddOn() {
         final String memcacheServers = System.getenv("MEMCACHE_SERVERS");
         return memcachedConfig()
                 .username(System.getenv("MEMCACHE_USERNAME"))
@@ -119,7 +119,7 @@ public class MemcachedConfigurator {
     /**
      * Configuration based on system properties set by the memcachierAddOn
      */
-    public static MemcachedConfigurator memcachierAddOn() {
+    public static MemcachedConfigBuilder memcachierAddOn() {
         final String memcachierServers = System.getenv("MEMCACHIER_SERVERS");
         return memcachedConfig()
                 .username(System.getenv("MEMCACHIER_USERNAME"))
