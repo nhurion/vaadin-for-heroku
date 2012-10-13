@@ -32,6 +32,14 @@
         <developerConnection>scm:git:git@github.com:nhurion/vaadin-for-heroku.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/nhurion/vaadin-for-heroku/issues</url>
+    </issueManagement>
+    <ciManagement>
+        <system>travis</system>
+        <url>https://travis-ci.org/#!/nhurion/vaadin-for-heroku</url>
+    </ciManagement>
     <developers>
         <developer>
             <id>nhurion</id>
@@ -40,7 +48,7 @@
     </developers>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <tomcat.version>7.0.26</tomcat.version>
+        <tomcat.version>7.0.29</tomcat.version>
     </properties>
 
     <dependencies>

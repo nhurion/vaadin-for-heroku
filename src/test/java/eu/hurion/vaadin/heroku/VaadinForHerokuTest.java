@@ -11,12 +11,13 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import static eu.hurion.vaadin.heroku.VaadinForHeroku.localServer;
+import static eu.hurion.vaadin.heroku.VaadinForHeroku.forApplication;
+import static eu.hurion.vaadin.heroku.VaadinForHeroku.testServer;
 import static org.testng.Assert.assertEquals;
 
 public class VaadinForHerokuTest {
 
-    private final EmbedVaadinServer localServer = localServer(TestApplication.class).wait(false).openBrowser(false).build();
+    private final EmbedVaadinServer localServer = testServer(forApplication(TestApplication.class)).build();
     private final WebDriver driver = new FirefoxDriver();
 
     @BeforeClass
@@ -30,7 +31,7 @@ public class VaadinForHerokuTest {
         driver.close();
     }
 
-    @Test(invocationCount = 5)
+    @Test
     public void checkLocalServer() {
         driver.get("http://localhost:8080/?restartApplication");
         final WebDriverWait wait = new WebDriverWait(driver, /*seconds=*/3);

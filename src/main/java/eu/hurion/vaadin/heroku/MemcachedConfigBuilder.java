@@ -5,7 +5,7 @@ package eu.hurion.vaadin.heroku;
  */
 public class MemcachedConfigBuilder {
     public static final int DEFAULT_MEMCACHEPORT = 11211;
-    public static final String DEFAULT_URL = "127.0.0.1";
+    public static final String DEFAULT_URL = "localhost";
 
     private String username;
     private String password;

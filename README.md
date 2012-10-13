@@ -14,7 +14,7 @@ Add the dependency to maven:
     <dependency>
       <groupId>eu.hurion.vaadin.heroku</groupId>
       <artifactId>vaadin-for-heroku</artifactId>
-      <version>0.2</version>
+      <version>0.3</version>
     </dependency>
 
 Then make a class with a main method to launch the server;
@@ -46,3 +46,13 @@ This local server does not require memcached to be running/configured, launch on
 Best way to use it is to make another launcher in your test sources and use it from your IDE.
 
 See [hello-vaadin-heroku](https://github.com/nhurion/hello-vaadin-heroku) for a complete example.
+
+Changelog
+=========
+
+0.3
+---
+* added possibility to define and map filter and application listener
+* localServer and herokuServer now take a VaadinForHeroku, configure it for local/heroku and return it
+* added testServer to configure a server for usage in "unit" tests.
+* bumped to tomcat 7.0.29
