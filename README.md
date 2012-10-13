@@ -20,14 +20,14 @@ Add the dependency to maven:
 Then make a class with a main method to launch the server;
 
     public static void main(final String[] args) {
-        herokuServer(YourVaadinApplication.class).start();
+        herokuServer(forApplication(YourVaadinApplication.class)).start();
     }
 
 By default, the configuration assume you're using the memcache add-on.
 If you prefer using the memcachier add-on, use
 
     public static void main(final String[] args) {
-        herokuServer(YourVaadinApplication.class)
+        herokuServer(forApplication(YourVaadinApplication.class))
                 .withMemcachedSessionManager(memcachierAddOn())
                 .start();
     }
@@ -39,7 +39,7 @@ Finally, make a Procfile to point to you class
 For ease of development, another pre-configured server is available:
 
     public static void main(final String[] args) {
-        localServer(YourVaadinApplication.class).start();
+        localServer(forApplication(YourVaadinApplication.class)).start();
     }
 
 This local server does not require memcached to be running/configured, launch on port 8080 and automatically open a browser.

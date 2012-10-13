@@ -58,30 +58,6 @@ public class VaadinForHeroku extends EmbedVaadinServerBuilder<VaadinForHeroku, E
     }
 
     /**
-     * Creates a server configured for local development for the given Application
-     *
-     * @param applicationClass the class of the application to deploy
-     *
-     * @deprecated replaced by {@link #localServer(VaadinForHeroku)}. Will be removed in 0.4
-     */
-    @Deprecated
-    public static VaadinForHeroku localServer(final Class<? extends Application> applicationClass) {
-        return localServer(forApplication(applicationClass));
-    }
-
-    /**
-     * Creates a server configured for Heroku for the given Application
-     *
-     * @param applicationClass the class of the application to deploy
-     *
-     * @deprecated replaced by {@link #herokuServer(VaadinForHeroku)}. Will be removed in 0.4
-     */
-    @Deprecated
-    public static VaadinForHeroku herokuServer(final Class<? extends Application> applicationClass) {
-        return herokuServer(forApplication(applicationClass));
-    }
-
-    /**
      * Configures the given server for local development
      *
      * @param server the server to be configured for local development
