@@ -14,7 +14,7 @@ Add the dependency to maven:
     <dependency>
       <groupId>eu.hurion.vaadin.heroku</groupId>
       <artifactId>vaadin-for-heroku</artifactId>
-      <version>0.3</version>
+      <version>0.4</version>
     </dependency>
 
 Then make a class with a main method to launch the server;
@@ -49,6 +49,10 @@ See [hello-vaadin-heroku](https://github.com/nhurion/hello-vaadin-heroku) for a 
 
 Changelog
 =========
+
+0.4
+---
+* enforce consistent version of tomcat dependencies and psuh to version 7.0.29
 
 0.3
 ---
