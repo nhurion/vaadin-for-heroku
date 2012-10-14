@@ -9,7 +9,7 @@
 
     <groupId>eu.hurion.vaadin.heroku</groupId>
     <artifactId>vaadin-for-heroku</artifactId>
-    <version>0.4-SNAPSHOT</version>
+    <version>0.4</version>
     <packaging>jar</packaging>
     <name>Vaadin for Heroku</name>
     <description>
@@ -30,7 +30,7 @@
         <url>git@github.com:nhurion/vaadin-for-heroku.git</url>
         <connection>scm:git:git@github.com/nhurion/vaadin-for-heroku.git</connection>
         <developerConnection>scm:git:git@github.com:nhurion/vaadin-for-heroku.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>vaadin-for-heroku-0.4</tag>
     </scm>
     <issueManagement>
         <system>GitHub</system>
