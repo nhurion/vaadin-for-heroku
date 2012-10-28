@@ -1,11 +1,9 @@
 package eu.hurion.vaadin.heroku;
 
 import com.bsb.common.vaadin.embed.EmbedVaadinServer;
-import com.google.common.base.Function;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -14,6 +12,7 @@ import org.testng.annotations.Test;
 import static eu.hurion.vaadin.heroku.FilterDefinitionBuilder.filterDefinition;
 import static eu.hurion.vaadin.heroku.VaadinForHeroku.forApplication;
 import static eu.hurion.vaadin.heroku.VaadinForHeroku.testServer;
+import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.testng.Assert.assertEquals;
 
 public class VaadinForHerokuTest {
@@ -24,11 +23,11 @@ public class VaadinForHerokuTest {
             .withFilterDefinition(filterDefinition("mockFilter").withFilter(filter))
             .withFilterMapping(FilterMapBuilder.mapFilter("mockFilter").toUrlPattern("/*"))
             .build();
-    private final WebDriver driver = new FirefoxDriver();
+    private final WebDriver driver = new SharedDriver();
 
     @BeforeClass
     public void startup() {
-        //check that the appliation listener is called when the application is started.
+        //check that the application listener is called when the application is started.
         MockApplicationListener.setShouldBeInvoked(false);
         MockApplicationListener.verify();
         localServer.start();
@@ -38,7 +37,7 @@ public class VaadinForHerokuTest {
 
     @AfterClass
     public void shutdown() {
-        driver.close();
+        localServer.stop();
     }
 
     @Test
@@ -54,13 +53,5 @@ public class VaadinForHerokuTest {
     }
 
 
-    private Function<WebDriver, WebElement> presenceOfElementLocated(final By locator) {
-        return new Function<WebDriver, WebElement>() {
-            @Override
-            public WebElement apply(final WebDriver driver) {
-                return driver.findElement(locator);
-            }
-        };
-    }
 
 }

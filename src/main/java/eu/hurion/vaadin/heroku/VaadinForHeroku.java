@@ -6,13 +6,13 @@ import com.bsb.common.vaadin.embed.EmbedVaadinServerBuilder;
 import com.bsb.common.vaadin.embed.application.ApplicationBasedEmbedVaadinTomcat;
 import com.google.common.collect.Lists;
 import com.vaadin.Application;
-import de.javakaffee.web.msm.MemcachedBackupSessionManager;
-import eu.hurion.vaadin.heroku.MemcachedConfigBuilder.MemcachedConfiguration;
+import org.apache.catalina.Manager;
 import org.apache.catalina.deploy.FilterDef;
 import org.apache.catalina.deploy.FilterMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.ServletContextListener;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
@@ -31,7 +31,7 @@ public class VaadinForHeroku extends EmbedVaadinServerBuilder<VaadinForHeroku, E
     private final Class<? extends Application> applicationClass;
     private EmbedVaadinConfig config;
 
-    private MemcachedConfigBuilder memcachedConfigBuilder;
+    private MemcachedManagerBuilder memcachedManagerBuilder;
     private final List<FilterDefinitionBuilder> filterDefinitions = Lists.newArrayList();
     private final List<FilterMapBuilder> filterMaps = Lists.newArrayList();
     private final List<String> applicationListeners = Lists.newArrayList();
@@ -79,7 +79,7 @@ public class VaadinForHeroku extends EmbedVaadinServerBuilder<VaadinForHeroku, E
     public static VaadinForHeroku herokuServer(final VaadinForHeroku server) {
 
         return server
-                .withMemcachedSessionManager(MemcachedConfigBuilder.memcacheAddOn())
+                .withMemcachedSessionManager(MemcachedManagerBuilder.memcacheAddOn())
                 .withHttpPort(Integer.parseInt(System.getenv(VaadinForHeroku.PORT)))
                 .withProductionMode(true)
                 .openBrowser(false);
@@ -115,21 +115,24 @@ public class VaadinForHeroku extends EmbedVaadinServerBuilder<VaadinForHeroku, E
 
     @Override
     public EmbedVaadinServer build() {
-        MemcachedConfiguration memcachedConfig = null;
-        if (this.memcachedConfigBuilder != null) {
-            memcachedConfig = memcachedConfigBuilder.build();
+        final Manager manager;
+        LOG.debug("memcached config: " + memcachedManagerBuilder);
+        if (this.memcachedManagerBuilder != null) {
+            manager = memcachedManagerBuilder.build();
+        } else {
+            manager = null;
         }
         final List<FilterDef> filterDefs = Lists.newArrayList();
-        for (FilterDefinitionBuilder filterDefinition : filterDefinitions) {
+        for (final FilterDefinitionBuilder filterDefinition : filterDefinitions) {
             filterDefs.add(filterDefinition.build());
         }
         final List<FilterMap> filterMappings = Lists.newArrayList();
-        for (FilterMapBuilder filterMap : filterMaps) {
+        for (final FilterMapBuilder filterMap : filterMaps) {
             filterMappings.add(filterMap.build());
         }
-        LOG.debug("Memcached configuration: " + memcachedConfig);
+
         return new EmbedVaadinWithSessionManagement(getConfig(), getApplicationClass(),
-                memcachedConfig, filterDefs, filterMappings, applicationListeners);
+                manager, filterDefs, filterMappings, applicationListeners);
     }
 
     @Override
@@ -138,8 +141,8 @@ public class VaadinForHeroku extends EmbedVaadinServerBuilder<VaadinForHeroku, E
         return self();
     }
 
-    public VaadinForHeroku withMemcachedSessionManager(final MemcachedConfigBuilder memcachedConfigBuilder) {
-        this.memcachedConfigBuilder = memcachedConfigBuilder;
+    public VaadinForHeroku withMemcachedSessionManager(final MemcachedManagerBuilder memcachedManagerBuilder) {
+        this.memcachedManagerBuilder = memcachedManagerBuilder;
         return self();
     }
 
@@ -180,11 +183,11 @@ public class VaadinForHeroku extends EmbedVaadinServerBuilder<VaadinForHeroku, E
 
     /**
      * 
-     * @param listeners
+     * @param listeners class of the {@code ApplicationListener} to add in the configuration of the server.
      * @since 0.3
      */
-    public VaadinForHeroku withApplicationListener(final Class<?>... listeners){
-        for (Class<?> listener : listeners) {
+    public VaadinForHeroku withApplicationListener(final Class<? extends ServletContextListener>... listeners){
+        for (final Class<?> listener : listeners) {
             applicationListeners.add(listener.getName());
         }
         return self();
@@ -195,7 +198,7 @@ public class VaadinForHeroku extends EmbedVaadinServerBuilder<VaadinForHeroku, E
      */
     private static final class EmbedVaadinWithSessionManagement extends ApplicationBasedEmbedVaadinTomcat {
 
-        private final MemcachedConfiguration memcachedConfiguration;
+        private final Manager manager;
         private final List<FilterDef> filterDefinitions;
         private final List<FilterMap> filterMaps;
         private final List<String> applicationListeners;
@@ -203,19 +206,18 @@ public class VaadinForHeroku extends EmbedVaadinServerBuilder<VaadinForHeroku, E
         /**
          * @param config                 the config to use
          * @param applicationClass       the class of the application to handle
-         * @param memcachedConfiguration the ocnfiguration to access memcached.
- *                               If null, memcached-session-manager is not used at all and session are only stored in memory.
+         * @param manager                Custom Session manager. Optional
          * @param filterDefinitions      the list of filter definitions.
          * @param filterMaps             the list of filter maps.
          */
         private EmbedVaadinWithSessionManagement(final EmbedVaadinConfig config,
                                                  final Class<? extends Application> applicationClass,
-                                                 final MemcachedConfiguration memcachedConfiguration,
+                                                 final Manager manager,
                                                  final List<FilterDef> filterDefinitions,
                                                  final List<FilterMap> filterMaps,
                                                  final List<String> applicationListeners) {
             super(config, applicationClass);
-            this.memcachedConfiguration = memcachedConfiguration;
+            this.manager = manager;
             this.filterDefinitions = filterDefinitions;
             this.filterMaps = filterMaps;
             this.applicationListeners = applicationListeners;
@@ -224,24 +226,17 @@ public class VaadinForHeroku extends EmbedVaadinServerBuilder<VaadinForHeroku, E
         @Override
         protected void configure() {
             super.configure();
-            if (memcachedConfiguration != null) {
-                final MemcachedBackupSessionManager manager = new MemcachedBackupSessionManager();
-                manager.setMemcachedNodes(memcachedConfiguration.getUrl() + ":" + memcachedConfiguration.getPort());
-                manager.setUsername(memcachedConfiguration.getUsername());
-                manager.setPassword(memcachedConfiguration.getPassword());
-                manager.setSticky(false);
-                manager.setMemcachedProtocol("binary");
-                manager.setRequestUriIgnorePattern(".*\\.(png|gif|jpg|css|js)$");
+            if (manager != null) {
                 getContext().setManager(manager);
             }
 
-            for (String applicationListener : applicationListeners) {
+            for (final String applicationListener : applicationListeners) {
                 getContext().addApplicationListener(applicationListener);
             }
-            for (FilterDef filterDefinition : filterDefinitions) {
+            for (final FilterDef filterDefinition : filterDefinitions) {
                 getContext().addFilterDef(filterDefinition);
             }
-            for (FilterMap filterMap : filterMaps) {
+            for (final FilterMap filterMap : filterMaps) {
                 getContext().addFilterMap(filterMap);
             }
         }
