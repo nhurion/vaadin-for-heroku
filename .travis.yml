@@ -1,4 +1,6 @@
 language: java
+services:
+  - memcached
 jdk:
   - openjdk6
 before_script:
@@ -7,5 +9,3 @@ before_script:
   - sleep 3 # give xvfb some time to start
 env:
   - DISPLAY=:99
-services:
-  - memcached
