@@ -1,4 +1,4 @@
-package eu.hurion.vaadin.heroku;
+package eu.hurion.vaadin.heroku.it;
 
 import com.google.common.base.Function;
 import org.openqa.selenium.By;

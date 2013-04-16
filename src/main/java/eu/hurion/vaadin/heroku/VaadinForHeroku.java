@@ -4,8 +4,10 @@ import com.bsb.common.vaadin.embed.EmbedVaadinConfig;
 import com.bsb.common.vaadin.embed.EmbedVaadinServer;
 import com.bsb.common.vaadin.embed.EmbedVaadinServerBuilder;
 import com.bsb.common.vaadin.embed.application.ApplicationBasedEmbedVaadinTomcat;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.vaadin.Application;
+import org.apache.catalina.Context;
 import org.apache.catalina.Manager;
 import org.apache.catalina.deploy.FilterDef;
 import org.apache.catalina.deploy.FilterMap;
@@ -41,7 +43,7 @@ public class VaadinForHeroku extends EmbedVaadinServerBuilder<VaadinForHeroku, E
      *
      * @param applicationClass the class of the application to deploy
      */
-    public VaadinForHeroku(final Class<? extends Application> applicationClass) {
+    private VaadinForHeroku(final Class<? extends Application> applicationClass) {
         super();
         assertNotNull(applicationClass, "applicationClass could not be null.");
         this.applicationClass = applicationClass;
@@ -54,6 +56,7 @@ public class VaadinForHeroku extends EmbedVaadinServerBuilder<VaadinForHeroku, E
      * @param applicationClass the class of the application to deploy
      */
     public static VaadinForHeroku forApplication(final Class<? extends Application> applicationClass) {
+
         return new VaadinForHeroku(applicationClass);
     }
 
@@ -114,7 +117,7 @@ public class VaadinForHeroku extends EmbedVaadinServerBuilder<VaadinForHeroku, E
     }
 
     @Override
-    public EmbedVaadinServer build() {
+    public EmbedVaadinWithSessionManagement build() {
         final Manager manager;
         LOG.debug("memcached config: " + memcachedManagerBuilder);
         if (this.memcachedManagerBuilder != null) {
@@ -146,6 +149,11 @@ public class VaadinForHeroku extends EmbedVaadinServerBuilder<VaadinForHeroku, E
         return self();
     }
 
+    public VaadinForHeroku withoutMemcachedSessionManager(){
+        this.memcachedManagerBuilder = null;
+        return self();
+    }
+
     /**
      * Add filter definitions to the server configuration.
      * 
@@ -153,6 +161,7 @@ public class VaadinForHeroku extends EmbedVaadinServerBuilder<VaadinForHeroku, E
      * @since 0.3
      */
     public VaadinForHeroku withFilterDefinition(final FilterDefinitionBuilder... filterDefs){
+        checkVarArgsArguments(filterDefs);
         this.filterDefinitions.addAll(Arrays.asList(filterDefs));
         return self();
     }
@@ -166,6 +175,7 @@ public class VaadinForHeroku extends EmbedVaadinServerBuilder<VaadinForHeroku, E
      * @since 0.3
      */
     public VaadinForHeroku withFilterMapping(final FilterMapBuilder... filterMaps){
+        checkVarArgsArguments(filterMaps);
         this.filterMaps.addAll(Arrays.asList(filterMaps));
         return self();
     }
@@ -177,8 +187,16 @@ public class VaadinForHeroku extends EmbedVaadinServerBuilder<VaadinForHeroku, E
      * @since 0.3
      */
     public VaadinForHeroku withApplicationListener(final String... listeners){
+        checkVarArgsArguments(listeners);
         this.applicationListeners.addAll(Arrays.asList(listeners));
         return self();
+    }
+
+    private void checkVarArgsArguments(final Object[] objects) {
+        Preconditions.checkArgument(objects != null);
+        for (Object object : objects) {
+            Preconditions.checkArgument(object != null);
+        }
     }
 
     /**
@@ -187,6 +205,7 @@ public class VaadinForHeroku extends EmbedVaadinServerBuilder<VaadinForHeroku, E
      * @since 0.3
      */
     public VaadinForHeroku withApplicationListener(final Class<? extends ServletContextListener>... listeners){
+        checkVarArgsArguments(listeners);
         for (final Class<?> listener : listeners) {
             applicationListeners.add(listener.getName());
         }
@@ -196,7 +215,7 @@ public class VaadinForHeroku extends EmbedVaadinServerBuilder<VaadinForHeroku, E
     /**
      * An {@link com.bsb.common.vaadin.embed.EmbedVaadinServer} implementation that will configure tomcat to store session in memcached.
      */
-    private static final class EmbedVaadinWithSessionManagement extends ApplicationBasedEmbedVaadinTomcat {
+    static final class EmbedVaadinWithSessionManagement extends ApplicationBasedEmbedVaadinTomcat {
 
         private final Manager manager;
         private final List<FilterDef> filterDefinitions;
@@ -221,6 +240,10 @@ public class VaadinForHeroku extends EmbedVaadinServerBuilder<VaadinForHeroku, E
             this.filterDefinitions = filterDefinitions;
             this.filterMaps = filterMaps;
             this.applicationListeners = applicationListeners;
+        }
+
+        Context getContextForTest() {
+            return super.getContext();
         }
 
         @Override

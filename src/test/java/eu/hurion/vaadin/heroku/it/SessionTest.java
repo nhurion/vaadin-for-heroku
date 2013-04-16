@@ -1,7 +1,8 @@
-package eu.hurion.vaadin.heroku;
+package eu.hurion.vaadin.heroku.it;
 
 import com.bsb.common.vaadin.embed.EmbedVaadinServer;
 import com.google.common.collect.Lists;
+import eu.hurion.vaadin.heroku.VaadinForHeroku;
 import org.openqa.selenium.WebDriver;
 import org.testng.SkipException;
 import org.testng.annotations.AfterClass;

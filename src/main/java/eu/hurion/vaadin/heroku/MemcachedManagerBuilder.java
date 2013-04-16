@@ -8,6 +8,8 @@ import de.javakaffee.web.msm.MemcachedBackupSessionManager;
 public class MemcachedManagerBuilder {
     public static final int DEFAULT_MEMCACHEPORT = 11211;
     public static final String DEFAULT_URL = "localhost";
+    public static final String BINARY = "binary";
+    public static final String URI_IGNORE_PATTERN = ".*\\.(png|gif|jpg|css|js)$";
 
     private String username;
     private String password;
@@ -61,8 +63,8 @@ public class MemcachedManagerBuilder {
         manager.setSticky(false);
         manager.setSessionBackupAsync(false);
         manager.setDistributable(true);
-        manager.setMemcachedProtocol("binary");
-        manager.setRequestUriIgnorePattern(".*\\.(png|gif|jpg|css|js)$");
+        manager.setMemcachedProtocol(BINARY);
+        manager.setRequestUriIgnorePattern(URI_IGNORE_PATTERN);
         return manager;
     }
 

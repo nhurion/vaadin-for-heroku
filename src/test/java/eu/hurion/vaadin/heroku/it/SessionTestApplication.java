@@ -1,4 +1,4 @@
-package eu.hurion.vaadin.heroku;
+package eu.hurion.vaadin.heroku.it;
 
 import com.vaadin.Application;
 import com.vaadin.ui.*;

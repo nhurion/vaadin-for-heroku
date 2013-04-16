@@ -18,13 +18,16 @@ public class FilterDefinitionBuilder {
     private String largeIcon;
     private Map<String, String> parameters = Maps.newHashMap();
     private String smallIcon;
-    private String asyncSupported;
+    private boolean asyncSupported;
 
     private FilterDefinitionBuilder(final String filterName) {
+        if (filterName == null) {
+            throw new IllegalArgumentException("filter name cannot be null");
+        }
         this.filterName = filterName;
     }
 
-    public static FilterDefinitionBuilder filterDefinition(final String filterName){
+    public static FilterDefinitionBuilder filterDefinition(final String filterName) {
         return new FilterDefinitionBuilder(filterName);
     }
 
@@ -48,7 +51,7 @@ public class FilterDefinitionBuilder {
         return this;
     }
 
-    public FilterDefinitionBuilder withFilterClass(final Class<?> filterClass){
+    public FilterDefinitionBuilder withFilterClass(final Class<?> filterClass) {
         this.filterClass = filterClass.getName();
         return this;
     }
@@ -58,13 +61,21 @@ public class FilterDefinitionBuilder {
         return this;
     }
 
+    /**
+     * Add a parameter with its associated value.
+     * One a parameter has been added, its value cannot be changed.
+     *
+     * @param name  the name of the parameter
+     * @param value the value of the parameter
+     * @return this
+     */
     public FilterDefinitionBuilder withParameter(final String name, final String value) {
         if (parameters.containsKey(name)) {
             // The spec does not define this but the TCK expects the first
             // definition to take precedence
             return this;
         }
-        this.parameters.put(name,value);
+        this.parameters.put(name, value);
         return this;
     }
 
@@ -73,8 +84,13 @@ public class FilterDefinitionBuilder {
         return this;
     }
 
-    public FilterDefinitionBuilder withAsyncSupported(final String asyncSupported) {
-        this.asyncSupported = asyncSupported;
+    /**
+     * The the AsyncSupported parameter of the filter to true. By default is false.
+     *
+     * @return this
+     */
+    public FilterDefinitionBuilder supportAsync() {
+        this.asyncSupported = true;
         return this;
     }
 
@@ -83,14 +99,29 @@ public class FilterDefinitionBuilder {
         filterDef.setFilterName(filterName);
         filterDef.setFilter(filter);
         filterDef.setFilterClass(filterClass);
-        filterDef.setAsyncSupported(asyncSupported);
+        filterDef.setAsyncSupported(Boolean.toString(asyncSupported));
         filterDef.setDescription(description);
         filterDef.setDisplayName(displayName);
         filterDef.setLargeIcon(largeIcon);
         filterDef.setSmallIcon(smallIcon);
         for (Map.Entry<String, String> parameter : parameters.entrySet()) {
-            filterDef.addInitParameter(parameter.getKey(),parameter.getValue());
+            filterDef.addInitParameter(parameter.getKey(), parameter.getValue());
         }
         return filterDef;
+    }
+
+    @Override
+    public String toString() {
+        return "FilterDefinitionBuilder{" +
+                "description='" + description + '\'' +
+                ", displayName='" + displayName + '\'' +
+                ", filter=" + filter +
+                ", filterClass='" + filterClass + '\'' +
+                ", filterName='" + filterName + '\'' +
+                ", largeIcon='" + largeIcon + '\'' +
+                ", parameters=" + parameters +
+                ", smallIcon='" + smallIcon + '\'' +
+                ", asyncSupported=" + asyncSupported +
+                '}';
     }
 }

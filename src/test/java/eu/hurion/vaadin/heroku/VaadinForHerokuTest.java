@@ -1,57 +1,77 @@
 package eu.hurion.vaadin.heroku;
 
-import com.bsb.common.vaadin.embed.EmbedVaadinServer;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
+import org.apache.catalina.Context;
 import org.testng.annotations.Test;
 
-import static eu.hurion.vaadin.heroku.FilterDefinitionBuilder.filterDefinition;
-import static eu.hurion.vaadin.heroku.VaadinForHeroku.forApplication;
-import static eu.hurion.vaadin.heroku.VaadinForHeroku.testServer;
-import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
-import static org.testng.Assert.assertEquals;
+import javax.servlet.ServletContextListener;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 
 public class VaadinForHerokuTest {
 
-    private final MockFilter filter = new MockFilter();
-    private final EmbedVaadinServer localServer = testServer(forApplication(TestApplication.class))
-            .withApplicationListener(MockApplicationListener.class)
-            .withFilterDefinition(filterDefinition("mockFilter").withFilter(filter))
-            .withFilterMapping(FilterMapBuilder.mapFilter("mockFilter").toUrlPattern("/*"))
-            .build();
-    private final WebDriver driver = new SharedDriver();
+    private final VaadinForHeroku server = VaadinForHeroku.forApplication(TestApplication.class);
 
-    @BeforeClass
-    public void startup() {
-        //check that the application listener is called when the application is started.
-        MockApplicationListener.setShouldBeInvoked(false);
-        MockApplicationListener.verify();
-        localServer.start();
-        MockApplicationListener.setShouldBeInvoked(true);
-        MockApplicationListener.verify();
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void nullApplication() {
+        VaadinForHeroku.forApplication(null);
     }
 
-    @AfterClass
-    public void shutdown() {
-        localServer.stop();
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void nullStringApplicationListener() {
+        final VaadinForHeroku server = VaadinForHeroku.forApplication(TestApplication.class);
+        server.withApplicationListener(null, "fake listener", null);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void nullClassApplicationListener() {
+        final VaadinForHeroku server = VaadinForHeroku.forApplication(TestApplication.class);
+        server.withApplicationListener((Class<? extends ServletContextListener>) null);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void nullFilterDefinition() {
+        final VaadinForHeroku server = VaadinForHeroku.forApplication(TestApplication.class);
+        server.withFilterDefinition(null);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void nullFilterMapping() {
+        final VaadinForHeroku server = VaadinForHeroku.forApplication(TestApplication.class);
+        server.withFilterMapping(null);
     }
 
     @Test
-    public void checkLocalServer() {
-        //check that the filter is called when a request is processed
-        filter.verify();
-        driver.get("http://localhost:8080/?restartApplication");
-        final WebDriverWait wait = new WebDriverWait(driver, /*seconds=*/3);
-        final WebElement element = wait.until(presenceOfElementLocated(By.id(TestApplication.TEST_LABEL_ID)));
-        assertEquals(element.getText(), TestApplication.TEST_LABEL);
-        filter.setExpectedInvocation(true);
-        filter.verify();
+    public void withApplicationListener() {
+        final VaadinForHeroku withAppListener = server.withApplicationListener(MockApplicationListener.class);
+        assertThat(withAppListener, equalTo(server));
     }
 
+    @Test
+    public void withFilterDefinition() {
+        final VaadinForHeroku withFilter = server.withFilterDefinition(FilterDefinitionBuilder.filterDefinition("testFilter"));
+        assertThat(withFilter, equalTo(server));
+    }
 
+    @Test
+    public void withFilterMapping() {
+        final VaadinForHeroku withFilterMapping = server.withFilterMapping(FilterMapBuilder.mapFilter("testFilter"));
+        assertThat(withFilterMapping, equalTo(server));
+    }
 
+    @Test
+    public void buldServerWithoutSessionManager() {
+        final VaadinForHeroku.EmbedVaadinWithSessionManagement built = server.build();
+        final Context contextForTest = built.getContextForTest();
+        assertThat(contextForTest.getManager(), nullValue());
+    }
+
+    @Test
+    public void buildServerWithSessionManager() {
+        final VaadinForHeroku.EmbedVaadinWithSessionManagement built =
+                server.withMemcachedSessionManager(MemcachedManagerBuilder.memcachedConfig()).build();
+        built.configure();
+        final Context contextForTest = built.getContextForTest();
+        assertThat(contextForTest.getManager(), notNullValue());
+    }
 }

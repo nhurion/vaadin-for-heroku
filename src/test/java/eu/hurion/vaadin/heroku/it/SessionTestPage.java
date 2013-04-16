@@ -1,4 +1,4 @@
-package eu.hurion.vaadin.heroku;
+package eu.hurion.vaadin.heroku.it;
 
 import com.gargoylesoftware.htmlunit.ElementNotFoundException;
 import com.google.common.base.Function;
