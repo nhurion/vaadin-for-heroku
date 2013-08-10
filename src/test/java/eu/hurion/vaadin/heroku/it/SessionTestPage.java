@@ -6,6 +6,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 
@@ -27,10 +28,11 @@ public class SessionTestPage {
 
     }
 
-    public void enterName(final String name) {
+    public void enterName(final String name) throws InterruptedException {
         nameInput.clear();
         nameInput.sendKeys(name);
-
+        new Actions(driver).moveToElement(button);
+        Thread.sleep(50);
     }
 
     public void load(final String page) {

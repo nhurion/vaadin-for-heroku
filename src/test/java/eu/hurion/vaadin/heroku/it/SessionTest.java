@@ -86,6 +86,7 @@ public class SessionTest {
     }
 
     public void stopServers() throws InterruptedException {
+        Thread.sleep(250);
         for (final EmbedVaadinServer server : servers) {
             server.stop();
         }
@@ -96,7 +97,7 @@ public class SessionTest {
     private final Random random = new Random();
 
 
-    @Test(invocationCount = 10)
+    @Test(invocationCount = 5)
     public void oneServerNoMemcachedRefresh() throws InterruptedException {
         final String testValue = randomTestValue();
 
@@ -112,7 +113,7 @@ public class SessionTest {
         return testValues[random.nextInt(testValues.length)];
     }
 
-    @Test(invocationCount = 10)
+    @Test(invocationCount = 5)
     public void oneServerMemcachedRefresh() throws InterruptedException {
         final String testValue = randomTestValue();
 
@@ -124,7 +125,7 @@ public class SessionTest {
         page.assertNameValue(testValue);
     }
 
-    @Test(invocationCount = 10)
+    @Test(invocationCount = 5)
     public void twoServersShareSameSessionWithMemcached() throws InterruptedException {
         final String testValue = randomTestValue();
 

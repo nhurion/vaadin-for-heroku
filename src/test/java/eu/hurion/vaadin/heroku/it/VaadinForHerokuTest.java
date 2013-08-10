@@ -40,7 +40,8 @@ public class VaadinForHerokuTest {
     }
 
     @AfterClass
-    public void shutdown() {
+    public void shutdown() throws InterruptedException {
+        Thread.sleep(200);
         localServer.stop();
     }
 

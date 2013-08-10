@@ -56,12 +56,39 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <tomcat.version>7.0.29</tomcat.version>
+        <vaadin.version>7.1.2</vaadin.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>com.bsb.common.vaadin</groupId>
-            <artifactId>com.bsb.common.vaadin.embed</artifactId>
+            <artifactId>com.bsb.common.vaadin7.embed</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.vaadin</groupId>
+            <artifactId>vaadin-server</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.vaadin</groupId>
+            <artifactId>vaadin-client-compiled</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.vaadin</groupId>
+            <artifactId>vaadin-client</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.vaadin</groupId>
+            <artifactId>vaadin-push</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.vaadin</groupId>
+            <artifactId>vaadin-themes</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>de.javakaffee.msm</groupId>
@@ -128,8 +155,47 @@
         <dependencies>
             <dependency>
                 <groupId>com.vaadin</groupId>
-                <artifactId>vaadin</artifactId>
-                <version>6.8.2</version>
+                <artifactId>vaadin-server</artifactId>
+                <version>${vaadin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.vaadin</groupId>
+                <artifactId>vaadin-client-compiled</artifactId>
+                <version>${vaadin.version}</version>
+            </dependency>
+            <!--
+              Needed when using the widgetset optimizer (custom ConnectorBundleLoaderFactory).
+
+              For widgetset compilation, vaadin-client-compiler is automatically added on the
+              compilation classpath by vaadin-maven-plugin so normally there is no need for an
+              explicit dependency.
+            -->
+            <!--
+            <dependency>
+                <groupId>com.vaadin</groupId>
+                <artifactId>vaadin-client-compiler</artifactId>
+                <version>${vaadin.version}</version>
+            </dependency>
+            -->
+            <dependency>
+                <groupId>com.vaadin</groupId>
+                <artifactId>vaadin-client</artifactId>
+                <version>${vaadin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.vaadin</groupId>
+                <artifactId>vaadin-push</artifactId>
+                <version>${vaadin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.vaadin</groupId>
+                <artifactId>vaadin-themes</artifactId>
+                <version>${vaadin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>3.0.1</version>
             </dependency>
             <dependency>
                 <groupId>ch.qos.logback</groupId>
@@ -138,8 +204,8 @@
             </dependency>
             <dependency>
                 <groupId>com.bsb.common.vaadin</groupId>
-                <artifactId>com.bsb.common.vaadin.embed</artifactId>
-                <version>0.4</version>
+                <artifactId>com.bsb.common.vaadin7.embed</artifactId>
+                <version>0.5</version>
             </dependency>
             <dependency>
                 <groupId>de.javakaffee.msm</groupId>
@@ -193,7 +259,7 @@
             <dependency>
                 <groupId>org.seleniumhq.selenium</groupId>
                 <artifactId>selenium-java</artifactId>
-                <version>2.32.0</version>
+                <version>2.34.0</version>
             </dependency>
             <dependency>
                 <groupId>org.hamcrest</groupId>

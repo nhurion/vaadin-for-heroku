@@ -6,7 +6,7 @@ import com.bsb.common.vaadin.embed.EmbedVaadinServerBuilder;
 import com.bsb.common.vaadin.embed.application.ApplicationBasedEmbedVaadinTomcat;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-import com.vaadin.Application;
+import com.vaadin.ui.UI;
 import org.apache.catalina.Context;
 import org.apache.catalina.Manager;
 import org.apache.catalina.deploy.FilterDef;
@@ -30,7 +30,7 @@ public class VaadinForHeroku extends EmbedVaadinServerBuilder<VaadinForHeroku, E
     public static final int DEFAULT_PORT = 8080;
     public static final String PORT = "PORT";
 
-    private final Class<? extends Application> applicationClass;
+    private final Class<? extends UI> uiClass;
     private EmbedVaadinConfig config;
 
     private MemcachedManagerBuilder memcachedManagerBuilder;
@@ -41,12 +41,12 @@ public class VaadinForHeroku extends EmbedVaadinServerBuilder<VaadinForHeroku, E
     /**
      * Creates a new instance for the specified application.
      *
-     * @param applicationClass the class of the application to deploy
+     * @param uiClass the class of the application to deploy
      */
-    private VaadinForHeroku(final Class<? extends Application> applicationClass) {
+    private VaadinForHeroku(final Class<? extends UI> uiClass) {
         super();
-        assertNotNull(applicationClass, "applicationClass could not be null.");
-        this.applicationClass = applicationClass;
+        assertNotNull(uiClass, "uiClass cannot not be null.");
+        this.uiClass = uiClass;
         withConfigProperties(EmbedVaadinConfig.loadProperties());
     }
 
@@ -55,7 +55,7 @@ public class VaadinForHeroku extends EmbedVaadinServerBuilder<VaadinForHeroku, E
      *
      * @param applicationClass the class of the application to deploy
      */
-    public static VaadinForHeroku forApplication(final Class<? extends Application> applicationClass) {
+    public static VaadinForHeroku forApplication(final Class<? extends UI> applicationClass) {
 
         return new VaadinForHeroku(applicationClass);
     }
@@ -98,12 +98,12 @@ public class VaadinForHeroku extends EmbedVaadinServerBuilder<VaadinForHeroku, E
         return localServer(server).wait(false).openBrowser(false);
     }
     /**
-     * Returns the {@link Application} type that was used to initialize this instance, if any.
+     * Returns the {@link UI} type that was used to initialize this instance, if any.
      *
      * @return the application class or <tt>null</tt> if a component was set
      */
-    protected Class<? extends Application> getApplicationClass() {
-        return applicationClass;
+    protected Class<? extends UI> getUiClass() {
+        return uiClass;
     }
 
     @Override
@@ -134,7 +134,7 @@ public class VaadinForHeroku extends EmbedVaadinServerBuilder<VaadinForHeroku, E
             filterMappings.add(filterMap.build());
         }
 
-        return new EmbedVaadinWithSessionManagement(getConfig(), getApplicationClass(),
+        return new EmbedVaadinWithSessionManagement(getConfig(), getUiClass(),
                 manager, filterDefs, filterMappings, applicationListeners);
     }
 
@@ -230,7 +230,7 @@ public class VaadinForHeroku extends EmbedVaadinServerBuilder<VaadinForHeroku, E
          * @param filterMaps             the list of filter maps.
          */
         private EmbedVaadinWithSessionManagement(final EmbedVaadinConfig config,
-                                                 final Class<? extends Application> applicationClass,
+                                                 final Class<? extends UI> applicationClass,
                                                  final Manager manager,
                                                  final List<FilterDef> filterDefinitions,
                                                  final List<FilterMap> filterMaps,
