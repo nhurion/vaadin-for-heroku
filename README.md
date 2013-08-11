@@ -49,6 +49,13 @@ See [hello-vaadin-heroku](https://github.com/nhurion/hello-vaadin-heroku) for a 
 
 Changelog
 =========
+1.0
+---
+* migrate to Vaadin 7.1.2
+
+0.5
+---
+* fix of #2
 
 0.4
 ---
