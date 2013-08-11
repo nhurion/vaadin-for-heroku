@@ -14,7 +14,7 @@ Add the dependency to maven:
     <dependency>
       <groupId>eu.hurion.vaadin.heroku</groupId>
       <artifactId>vaadin-for-heroku</artifactId>
-      <version>0.4</version>
+      <version>1.0</version>
     </dependency>
 
 Then make a class with a main method to launch the server;
