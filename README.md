@@ -1,4 +1,4 @@
-Vaadin for Heroku  [![Build Status](https://secure.travis-ci.org/nhurion/vaadin-for-heroku.png?branch=master)](http://travis-ci.org/nhurion/vaadin-for-heroku)
+Vaadin for Heroku  [![Build Status](https://secure.travis-ci.org/nhurion/vaadin-for-heroku.png?branch=master)](http://travis-ci.org/nhurion/vaadin-for-heroku) [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/nhurion/vaadin-for-heroku/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 =================
 
 Easily build a [Vaadin](https://vaadin.com/home) application and deploy it on [Heroku](http://www.heroku.com).
@@ -68,6 +68,4 @@ Changelog
 * added testServer to configure a server for usage in "unit" tests.
 * bumped to tomcat 7.0.29
 
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/nhurion/vaadin-for-heroku/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
