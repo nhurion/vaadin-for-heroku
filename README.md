@@ -67,3 +67,7 @@ Changelog
 * localServer and herokuServer now take a VaadinForHeroku, configure it for local/heroku and return it
 * added testServer to configure a server for usage in "unit" tests.
 * bumped to tomcat 7.0.29
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/nhurion/vaadin-for-heroku/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
