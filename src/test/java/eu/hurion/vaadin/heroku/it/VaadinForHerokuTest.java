@@ -21,11 +21,13 @@ import static org.testng.Assert.assertEquals;
 
 public class VaadinForHerokuTest {
 
+    public static final int HTTP_PORT = 4848;
     private final MockFilter filter = new MockFilter();
     private final EmbedVaadinServer localServer = testServer(forApplication(TestApplication.class))
             .withApplicationListener(MockApplicationListener.class)
             .withFilterDefinition(filterDefinition("mockFilter").withFilter(filter))
             .withFilterMapping(FilterMapBuilder.mapFilter("mockFilter").toUrlPattern("/*"))
+            .withHttpPort(HTTP_PORT)
             .build();
     private final WebDriver driver = new SharedDriver();
 
@@ -49,14 +51,13 @@ public class VaadinForHerokuTest {
     public void checkLocalServer() {
         //check that the filter is called when a request is processed
         filter.verify();
-        driver.get("http://localhost:8080/?restartApplication");
+        driver.get("http://localhost:" + HTTP_PORT + "/?restartApplication");
         final WebDriverWait wait = new WebDriverWait(driver, /*seconds=*/3);
         final WebElement element = wait.until(presenceOfElementLocated(By.id(TestApplication.TEST_LABEL_ID)));
         assertEquals(element.getText(), TestApplication.TEST_LABEL);
         filter.setExpectedInvocation(true);
         filter.verify();
     }
-
 
 
 }
