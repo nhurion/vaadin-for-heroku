@@ -56,7 +56,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <tomcat.version>9.0.35</tomcat.version>
-        <vaadin.version>7.1.2</vaadin.version>
+        <vaadin.version>8.12.4</vaadin.version>
     </properties>
 
     <dependencies>
